@@ -2,8 +2,7 @@
 
 apt install npm
 
-
-bajar images
+-- bajar images
 
 opensuse/portus           development         f5ebf94b0195        About an hour ago   792MB
 postgres                  10-alpine           02073e5b96cf        5 weeks ago         71.8MB
@@ -14,40 +13,33 @@ kkarczmarczyk/node-yarn   latest              889248300b3f        17 months ago 
 quay.io/coreos/clair      v2.0.2              a6e48607a2c6        18 months ago       387MB
 mariadb                   10.0.23             93631b528e67        3 years ago         305MB
 
+-- algunos sistemas ademas requieren instalar lo siguiente
+
+echo -e 'http://dl-cdn.alpinelinux.org/alpine/edge/main\nhttp://dl-cdn.alpinelinux.org/alpine /edge/community\nhttp://dl-cdn.alpinelinux.org/alpine/edge/testing' > /etc/apk/repositories
+
+apk add --no-cache nodejs-current yarn
+yarn install
+yarn add global webpack
+yarn install
+apk add --update nodejs nodejs-npm && npm install npm@latest -g
+npm install webpack -g
+webpack --watch --config config/webpack.js
+
+-- reparar el container roto
+
 docker run -it --rm -v "$PWD":/usr/src/app -w /usr/src/app --entrypoint sh node:8-alpine -c 'npm install -g webpack yarn && yarn install && webpack --watch --config config/webpack.js'
 npm i -g webpack-cli
 
 
-////
+-- ejecutar la recopilacion dentro del container, dentro del container que publica hacia puerto 3000
 
-
-    echo -e 'http://dl-cdn.alpinelinux.org/alpine/edge/main\nhttp://dl-cdn.alpinelinux.org/alpine /edge/community\nhttp://dl-cdn.alpinelinux.org/alpine/edge/testing' > /etc/apk/repositories
-    apk add --no-cache nodejs-current yarn
-    yarn install
-    yarn add global webpack
-    yarn install
-    apk add --update nodejs nodejs-npm && npm install npm@latest -g
-    npm install webpack -g
-    webpack --watch --config config/webpack.js
-
-
-///////
-
-
-docker exec -it portus_web_1 /usr/bin/npm install webpack -g
-
-
-dentro del container que publica hacia puerto 3000
+docker exec -it portus_web_1 rake webpack:compile
 
 
 
-    echo -e 'http://dl-cdn.alpinelinux.org/alpine/edge/main\nhttp://dl-cdn.alpinelinux.org/alpine /edge/community\nhttp://dl-cdn.alpinelinux.org/alpine/edge/testing' > /etc/apk/repositories
-    apk add --no-cache nodejs-current yarn
-    yarn install
-    yarn add global webpack
-    yarn install
-    apk add --update nodejs nodejs-npm && npm install npm@latest -g
-    npm install webpack -g
-    webpack --watch --config config/webpack.js
 
-rake webpack:compile
+
+
+
+
+
