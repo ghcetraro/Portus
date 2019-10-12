@@ -1,0 +1,43 @@
+Firewall iptables
+
+Error block access to the registry
+
+execute:
+
+iptables -P INPUT ACCEPT
+iptables -P OUTPUT ACCEPT
+iptables -P FORWARD ACCEPT
+iptables -L -v -n
+
+
+-- Disable selinux
+
+/etc/selinux/config
+
+
+-- Disable firewall for docker
+
+nano /etc/docker/daemon.json
+
+
+{
+"iptables": false
+}
+
+
+-- Create insecure registry
+
+/etc/docker/daemon.json
+
+{
+        "dns": ["8.8.8.8", "8.8.4.4"],
+"insecure-registries": ["192.168.0.23:5000"]
+
+}
+
+
+-- Env variable
+
+use the real ip of server
+
+example: 192.168.1.2
