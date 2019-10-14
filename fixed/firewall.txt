@@ -43,3 +43,12 @@ nano /etc/docker/daemon.json
 use the real ip of server
 
 example: 192.168.1.2
+
+MACHINE_FQDN=192.168.3.101
+REGISTRY_PORT=5000
+
+
+-- In portaniner configure
+
+host : 172.17.0.1:5000
+external hostname: 192.168.3.101:5000
