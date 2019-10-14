@@ -2,6 +2,8 @@ Firewall iptables
 
 Error block access to the registry
 
+yum install iptables-service
+
 execute:
 
 iptables -P INPUT ACCEPT
