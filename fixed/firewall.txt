@@ -62,7 +62,7 @@ nano /etc/docker/daemon.json
 
 
 {
-"iptables": false
+"iptables": true
 }
 
 
