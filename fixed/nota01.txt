@@ -13,6 +13,9 @@ kkarczmarczyk/node-yarn   latest              889248300b3f        17 months ago 
 quay.io/coreos/clair      v2.0.2              a6e48607a2c6        18 months ago       387MB
 mariadb                   10.0.23             93631b528e67        3 years ago         305MB
 
+
+
+library/postgres:10-alpine -- > es el mismo que postgres:10-alpine 
 -- algunos sistemas ademas requieren instalar lo siguiente
 
 echo -e 'http://dl-cdn.alpinelinux.org/alpine/edge/main\nhttp://dl-cdn.alpinelinux.org/alpine /edge/community\nhttp://dl-cdn.alpinelinux.org/alpine/edge/testing' > /etc/apk/repositories

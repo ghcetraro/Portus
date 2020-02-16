@@ -1,4 +1,0 @@
-<VirtualHost *:80>
-        ServerName regadmin.aysa.ad
-        Redirect / https://regadmin.aysa.ad
-</VirtualHost>
