@@ -4,19 +4,17 @@ services:
   portus:
     build: .
     image: opensuse/portus:development
+    restart: unless-stopped
     command: bundle exec rails runner /srv/Portus/examples/development/compose/init.rb
     environment:
       - PORTUS_MACHINE_FQDN_VALUE=${MACHINE_FQDN}
       - PORTUS_PUMA_HOST=0.0.0.0:3000
       - PORTUS_CHECK_SSL_USAGE_ENABLED=false
       - PORTUS_SECURITY_CLAIR_SERVER=http://clair:6060
-
       - CCONFIG_PREFIX=PORTUS
-
       - PORTUS_DB_HOST=db
       - PORTUS_DB_PASSWORD=portus
       - PORTUS_DB_POOL=5
-
       - RAILS_SERVE_STATIC_FILES=true
     ports:
       - 3000:3000
@@ -26,9 +24,9 @@ services:
       - db
     volumes:
       - .:/srv/Portus
-
   background:
     image: opensuse/portus:development
+    restart: unless-stopped
     entrypoint: bundle exec rails runner /srv/Portus/bin/background.rb
     depends_on:
       - portus
@@ -36,10 +34,8 @@ services:
     environment:
       - PORTUS_MACHINE_FQDN_VALUE=${MACHINE_FQDN}
       - PORTUS_SECURITY_CLAIR_SERVER=http://clair:6060
-
       # Theoretically not needed, but cconfig's been buggy on this...
       - CCONFIG_PREFIX=PORTUS
-
       - PORTUS_DB_HOST=db
       - PORTUS_DB_PASSWORD=portus
       - PORTUS_DB_POOL=5
@@ -47,14 +43,13 @@ services:
       - .:/srv/Portus
     links:
       - db
-
   webpack:
     image: kkarczmarczyk/node-yarn:latest
+    restart: unless-stopped
     command: bash /srv/Portus/examples/development/compose/bootstrap-webpack
     working_dir: /srv/Portus
     volumes:
       - .:/srv/Portus
-
   clair:
     image: quay.io/coreos/clair:v2.0.2
     restart: unless-stopped
@@ -68,33 +63,29 @@ services:
       - /tmp:/tmp
       - ./examples/compose/clair/clair.yml:/clair.yml
     command: [-config, /clair.yml]
-
   db:
     image: library/mariadb:10.0.23
+    restart: unless-stopped
     command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci --init-connect='SET NAMES UTF8;' --innodb-flush-log-at-trx-commit=0
     environment:
       MYSQL_ROOT_PASSWORD: portus
-
   postgres:
     image: library/postgres:10-alpine
+    restart: unless-stopped
     environment:
       POSTGRES_PASSWORD: portus
-
   registry:
     image: library/registry:2.6
+    restart: unless-stopped
     environment:
       REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /registry_data
       REGISTRY_STORAGE_DELETE_ENABLED: "true"
-
       REGISTRY_HTTP_ADDR: 0.0.0.0:5000
       REGISTRY_HTTP_DEBUG_ADDR: 0.0.0.0:5001
-
       REGISTRY_AUTH_TOKEN_ROOTCERTBUNDLE: /etc/docker/registry/portus.crt
-
       REGISTRY_AUTH_TOKEN_REALM: http://${MACHINE_FQDN}:3000/v2/token
       REGISTRY_AUTH_TOKEN_SERVICE: ${MACHINE_FQDN}:${REGISTRY_PORT}
       REGISTRY_AUTH_TOKEN_ISSUER: ${MACHINE_FQDN}
-
       REGISTRY_NOTIFICATIONS_ENDPOINTS: >
         - name: portus
           url: http://${MACHINE_FQDN}:3000/v2/webhooks/events
@@ -109,3 +100,14 @@ services:
       - 5001:5001
     links:
       - portus
+  apache:
+    image: apache:01
+    restart: unless-stopped
+    environment:
+      PORTAL_URL: asumikamikaze.com
+      REGISTRY_URL: registry.asumikamikaze.com
+      REGISTRY_IP: registry
+      BACK_IP: portus 
+    ports:
+      - 80:80
+      - 443:443
