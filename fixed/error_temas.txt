@@ -1,0 +1,20 @@
+Error
+
+Resultados de búsqueda
+Resultados de la Web
+
+ActionView::Template::Error (undefined method `[]' for nil .
+
+-----------------------
+
+Solucion
+
+
+Here's your problem, as specified in the documentation you should never modify the config/config.yml file. Instead you have two options described more thoroughly in the documentation:
+
+    Provide a config/config-local.yml file with the values you want to change from the config/config-local.yml.
+    Set environment variables (with the format described in the documentation).
+
+All this is because the config/config.yml file acts as a file for default values, so Portus relies on this file being untouched.
+
+
